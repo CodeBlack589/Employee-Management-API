@@ -5,24 +5,19 @@ import uvicorn
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
-timedelta
-from jose import JWTError, jwt
-from passlib.context import CryptContext
 
-SECRET_KEY = "09031999"  # keep this safe
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
 app = FastAPI()
 
 """Here we create the database in MongoDB compass using use assessment_db   
 and after that db.createcollection("employees") and add some dummy data"""
 client = AsyncIOMotorClient("mongodb://localhost:27017")
-db = client.assessment_db   # database
+# database
+db = client.assessment_db
 employees = db.employees
 
+"""Here we are make employee_id as index and validation the schema"""
 @app.on_event("startup")
 async def create_indexes():
-    # Create an index on employee_id field
     await employees.create_index("employee_id", unique=True)
     employee_schema = {
         "bsonType": "object",
@@ -39,16 +34,13 @@ async def create_indexes():
             }
         }
     }
-
     try:
-        # This applies schema if collection already exists
         await db.command({
             "collMod": "employees",
             "validator": {"$jsonSchema": employee_schema},
             "validationLevel": "strict"
         })
     except Exception as e:
-        # If collection doesn't exist yet, create with schema
         try:
             await db.create_collection(
                 "employees",
@@ -56,8 +48,8 @@ async def create_indexes():
                 validationLevel="strict"
             )
         except Exception:
-            # Collection already exists with schema, safe to ignore
             pass
+
 """We use Pydantic for removing mannual thing too much"""
 class Employee(BaseModel):
     employee_id: str
@@ -140,6 +132,7 @@ async def delte_employee(employee_id: str):
         raise HTTPException(status_code=404, detail="Employee not found")
     return {"message": "Employee deleted successfully"}
 
+# Get employees by department and skip and limit :- Pagination
 @app.get("/employees")
 async def list_employees(department: Optional[str] = Query(None),skip: int = Query(0, ge=0),limit: int = Query(10, ge=1)):
     query = {}
