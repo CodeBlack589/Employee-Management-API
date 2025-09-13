@@ -36,7 +36,7 @@ employee-management-api/
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/<your-username>/employee-management-api.git
+git clone  https://github.com/CodeBlack589/Employee-Management-API
 cd employee-management-api
 ```
 
