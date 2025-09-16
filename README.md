@@ -60,7 +60,7 @@ db.employees.insertMany([
     "name": "Alice",
     "department": "Engineering",
     "salary": 75000,
-    "joining_date": new Date("2021-05-15"),
+    "joining_date": "2021-05-15",
     "skills": ["Python", "FastAPI", "MongoDB"]
   },
   {
@@ -68,7 +68,7 @@ db.employees.insertMany([
     "name": "Bob",
     "department": "HR",
     "salary": 50000,
-    "joining_date": new Date("2022-03-10"),
+    "joining_date": "2022-03-10",
     "skills": ["Recruitment", "Communication"]
   }
 ])
